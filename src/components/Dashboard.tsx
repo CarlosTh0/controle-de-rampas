@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Truck, Warehouse, Plus, Minus, Package } from 'lucide-react';
+import { Truck, Warehouse, Plus, Minus, Package, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -41,7 +41,7 @@ const Dashboard = () => {
     });
   };
 
-  // Função para remover frota da rampa
+  // Função para remover frota da rampa (apenas para frotas não carregadas)
   const removerFrota = (frotaId: string) => {
     setFrotas(prev => prev.map(frota => 
       frota.id === frotaId 
@@ -53,6 +53,21 @@ const Dashboard = () => {
     toast({
       title: "Frota Removida",
       description: `${frota?.numero} retornou ao pátio`,
+    });
+  };
+
+  // Função para finalizar carregamento e liberar rampa
+  const finalizarCarregamento = (frotaId: string) => {
+    setFrotas(prev => prev.map(frota => 
+      frota.id === frotaId 
+        ? { ...frota, status: 'patio', rampa: undefined, galpao: undefined, carregada: undefined }
+        : frota
+    ));
+    
+    const frota = frotas.find(f => f.id === frotaId);
+    toast({
+      title: "Carregamento Finalizado",
+      description: `${frota?.numero} finalizou o carregamento e liberou a rampa`,
     });
   };
 
@@ -243,14 +258,27 @@ const Dashboard = () => {
                                       />
                                       <label className="text-xs text-slate-600">Carregada</label>
                                     </div>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="mt-1 h-6 text-xs"
-                                      onClick={() => removerFrota(frotaOcupando.id)}
-                                    >
-                                      <Minus className="h-3 w-3" />
-                                    </Button>
+                                    <div className="flex gap-1">
+                                      {isCarregada ? (
+                                        <Button
+                                          size="sm"
+                                          variant="default"
+                                          className="h-6 text-xs bg-green-600 hover:bg-green-700"
+                                          onClick={() => finalizarCarregamento(frotaOcupando.id)}
+                                        >
+                                          <CheckCircle className="h-3 w-3" />
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="h-6 text-xs"
+                                          onClick={() => removerFrota(frotaOcupando.id)}
+                                        >
+                                          <Minus className="h-3 w-3" />
+                                        </Button>
+                                      )}
+                                    </div>
                                   </div>
                                 ) : (
                                   <div className="mt-1">
