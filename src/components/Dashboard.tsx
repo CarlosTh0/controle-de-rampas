@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Truck, Warehouse, Plus, Minus } from 'lucide-react';
+import { Truck, Warehouse, Plus, Minus, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 
 interface Frota {
@@ -11,6 +12,7 @@ interface Frota {
   status: 'patio' | 'rampa';
   rampa?: number;
   galpao?: number;
+  carregada?: boolean;
 }
 
 const Dashboard = () => {
@@ -18,8 +20,8 @@ const Dashboard = () => {
   const [frotas, setFrotas] = useState<Frota[]>([
     { id: '1', numero: 'CEG-001', status: 'patio' },
     { id: '2', numero: 'CEG-002', status: 'patio' },
-    { id: '3', numero: 'CEG-003', status: 'rampa', rampa: 1, galpao: 1 },
-    { id: '4', numero: 'CEG-004', status: 'rampa', rampa: 5, galpao: 2 },
+    { id: '3', numero: 'CEG-003', status: 'rampa', rampa: 1, galpao: 1, carregada: false },
+    { id: '4', numero: 'CEG-004', status: 'rampa', rampa: 5, galpao: 2, carregada: true },
   ]);
   
   const [novaFrota, setNovaFrota] = useState('');
@@ -28,7 +30,7 @@ const Dashboard = () => {
   const alocarFrota = (frotaId: string, rampa: number, galpao: number) => {
     setFrotas(prev => prev.map(frota => 
       frota.id === frotaId 
-        ? { ...frota, status: 'rampa', rampa, galpao }
+        ? { ...frota, status: 'rampa', rampa, galpao, carregada: false }
         : frota
     ));
     
@@ -43,7 +45,7 @@ const Dashboard = () => {
   const removerFrota = (frotaId: string) => {
     setFrotas(prev => prev.map(frota => 
       frota.id === frotaId 
-        ? { ...frota, status: 'patio', rampa: undefined, galpao: undefined }
+        ? { ...frota, status: 'patio', rampa: undefined, galpao: undefined, carregada: undefined }
         : frota
     ));
     
@@ -51,6 +53,23 @@ const Dashboard = () => {
     toast({
       title: "Frota Removida",
       description: `${frota?.numero} retornou ao pátio`,
+    });
+  };
+
+  // Função para marcar/desmarcar frota como carregada
+  const toggleCarregada = (frotaId: string) => {
+    setFrotas(prev => prev.map(frota => 
+      frota.id === frotaId 
+        ? { ...frota, carregada: !frota.carregada }
+        : frota
+    ));
+    
+    const frota = frotas.find(f => f.id === frotaId);
+    const novoStatus = !frota?.carregada;
+    
+    toast({
+      title: novoStatus ? "Frota Carregada" : "Carregamento Removido",
+      description: `${frota?.numero} ${novoStatus ? 'foi marcada como carregada' : 'não está mais carregada'}`,
     });
   };
 
@@ -95,7 +114,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -142,6 +161,20 @@ const Dashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
+                  <p className="text-sm font-medium text-slate-600">Carregadas</p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {frotas.filter(f => f.carregada).length}
+                  </p>
+                </div>
+                <Package className="h-8 w-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
                   <p className="text-sm font-medium text-slate-600">Rampas Livres</p>
                   <p className="text-3xl font-bold text-blue-600">
                     {16 - frotas.filter(f => f.status === 'rampa').length}
@@ -154,7 +187,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Galpões e Rampas */}
+          {/* Vãos e Rampas */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
@@ -175,13 +208,16 @@ const Dashboard = () => {
                           const rampa = (galpao - 1) * 4 + i + 1;
                           const frotaOcupando = rampaOcupada(rampa, galpao);
                           const isOcupada = !!frotaOcupando;
+                          const isCarregada = frotaOcupando?.carregada;
                           
                           return (
                             <div
                               key={rampa}
                               className={`relative p-3 rounded-lg border-2 transition-all duration-200 ${
                                 isOcupada 
-                                  ? 'bg-orange-50 border-orange-300' 
+                                  ? isCarregada 
+                                    ? 'bg-purple-50 border-purple-300' 
+                                    : 'bg-orange-50 border-orange-300'
                                   : 'bg-green-50 border-green-300 hover:bg-green-100'
                               }`}
                             >
@@ -190,10 +226,23 @@ const Dashboard = () => {
                                   Rampa {rampa}
                                 </p>
                                 {isOcupada ? (
-                                  <div className="mt-1">
-                                    <p className="text-xs font-bold text-orange-700">
+                                  <div className="mt-1 space-y-2">
+                                    <p className={`text-xs font-bold ${isCarregada ? 'text-purple-700' : 'text-orange-700'}`}>
                                       {frotaOcupando.numero}
                                     </p>
+                                    {isCarregada && (
+                                      <div className="flex items-center justify-center">
+                                        <Package className="h-3 w-3 text-purple-600" />
+                                      </div>
+                                    )}
+                                    <div className="flex items-center justify-center gap-1">
+                                      <Checkbox
+                                        checked={isCarregada}
+                                        onCheckedChange={() => toggleCarregada(frotaOcupando.id)}
+                                        className="h-3 w-3"
+                                      />
+                                      <label className="text-xs text-slate-600">Carregada</label>
+                                    </div>
                                     <Button
                                       size="sm"
                                       variant="outline"
