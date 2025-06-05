@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Truck, Warehouse, Plus, Minus, Package, CheckCircle } from 'lucide-react';
+import { Truck, Warehouse, Plus, Minus, Package, CheckCircle, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 interface Frota {
   id: string;
   numero: string;
-  status: 'patio' | 'rampa';
+  status: 'patio' | 'rampa' | 'despachada';
   rampa?: number;
   galpao?: number;
   carregada?: boolean;
@@ -56,18 +57,18 @@ const Dashboard = () => {
     });
   };
 
-  // Função para finalizar carregamento e liberar rampa
+  // Função para finalizar carregamento e despachar frota
   const finalizarCarregamento = (frotaId: string) => {
     setFrotas(prev => prev.map(frota => 
       frota.id === frotaId 
-        ? { ...frota, status: 'patio', rampa: undefined, galpao: undefined, carregada: undefined }
+        ? { ...frota, status: 'despachada', rampa: undefined, galpao: undefined, carregada: true }
         : frota
     ));
     
     const frota = frotas.find(f => f.id === frotaId);
     toast({
       title: "Carregamento Finalizado",
-      description: `${frota?.numero} finalizou o carregamento e liberou a rampa`,
+      description: `${frota?.numero} foi despachada e liberou a rampa`,
     });
   };
 
@@ -114,6 +115,9 @@ const Dashboard = () => {
 
   // Frotas disponíveis no pátio
   const frotasPatio = frotas.filter(f => f.status === 'patio');
+  
+  // Frotas despachadas (carregadas e finalizadas)
+  const frotasDespachadas = frotas.filter(f => f.status === 'despachada');
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -181,7 +185,7 @@ const Dashboard = () => {
                     {frotas.filter(f => f.carregada).length}
                   </p>
                 </div>
-                <Package className="h-8 w-8 text-purple-600" />
+                <Car className="h-8 w-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -247,7 +251,7 @@ const Dashboard = () => {
                                     </p>
                                     {isCarregada && (
                                       <div className="flex items-center justify-center">
-                                        <Package className="h-3 w-3 text-purple-600" />
+                                        <Car className="h-3 w-3 text-purple-600" />
                                       </div>
                                     )}
                                     <div className="flex items-center justify-center gap-1">
@@ -370,6 +374,42 @@ const Dashboard = () => {
                   {frotasPatio.length === 0 && (
                     <p className="text-center text-slate-500 py-8">
                       Nenhuma frota no pátio
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Frotas Despachadas */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Car className="h-5 w-5" />
+                  Frotas Despachadas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {frotasDespachadas.map(frota => (
+                    <div
+                      key={frota.id}
+                      className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Car className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium text-purple-800">
+                          {frota.numero}
+                        </span>
+                      </div>
+                      <span className="text-xs text-purple-600 font-medium">
+                        Carregada
+                      </span>
+                    </div>
+                  ))}
+                  
+                  {frotasDespachadas.length === 0 && (
+                    <p className="text-center text-slate-500 py-8">
+                      Nenhuma frota despachada
                     </p>
                   )}
                 </div>
