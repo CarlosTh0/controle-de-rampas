@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Truck, Warehouse, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +35,7 @@ const Dashboard = () => {
     const frota = frotas.find(f => f.id === frotaId);
     toast({
       title: "Frota Alocada",
-      description: `${frota?.numero} foi alocada na Rampa ${rampa}, Galpão ${galpao}`,
+      description: `${frota?.numero} foi alocada na Rampa ${rampa}, Vão ${galpao}`,
     });
   };
 
@@ -161,7 +160,7 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Warehouse className="h-5 w-5" />
-                  Galpões e Rampas
+                  Vãos e Rampas
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -169,7 +168,7 @@ const Dashboard = () => {
                   {[1, 2, 3, 4].map(galpao => (
                     <div key={galpao} className="space-y-4">
                       <h3 className="font-semibold text-slate-700 text-center">
-                        Galpão {galpao}
+                        Vão {galpao}
                       </h3>
                       <div className="grid grid-cols-2 gap-2">
                         {Array.from({ length: 4 }, (_, i) => {
@@ -283,7 +282,7 @@ const Dashboard = () => {
                           
                           return (
                             <option key={rampa} value={`${rampa}-${galpao}`}>
-                              Rampa {rampa} (G{galpao})
+                              Rampa {rampa} (V{galpao})
                             </option>
                           );
                         })}
