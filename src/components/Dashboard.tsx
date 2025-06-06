@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -274,7 +275,11 @@ const Dashboard = () => {
                                     </p>
                                     {isCarregada && (
                                       <div className="flex items-center justify-center">
-                                        <Car className="h-3 w-3 text-purple-600" />
+                                        <img 
+                                          src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
+                                          alt="Cegonheira Carregada" 
+                                          className="h-3 w-3 object-contain"
+                                        />
                                       </div>
                                     )}
                                     <div className="flex items-center justify-center gap-1">
@@ -411,7 +416,11 @@ const Dashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Car className="h-5 w-5" />
+                  <img 
+                    src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
+                    alt="Cegonheira Carregada" 
+                    className="h-5 w-5 object-contain"
+                  />
                   Frotas Despachadas
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
@@ -433,7 +442,11 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Car className="h-4 w-4 text-purple-600" />
+                          <img 
+                            src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
+                            alt="Cegonheira Carregada" 
+                            className="h-4 w-4 object-contain"
+                          />
                           <span className="font-medium text-purple-800">
                             {frota.numero}
                           </span>
