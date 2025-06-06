@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Truck, Warehouse, Plus, Minus, Package, CheckCircle, Car } from 'lucide-react';
+import { Truck, Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,6 +13,8 @@ interface Frota {
   rampa?: number;
   galpao?: number;
   carregada?: boolean;
+  rampaDespacho?: number; // Rampa onde estava quando foi despachada
+  galpaoDespacho?: number; // Galpão onde estava quando foi despachada
 }
 
 const Dashboard = () => {
@@ -26,6 +27,7 @@ const Dashboard = () => {
   ]);
   
   const [novaFrota, setNovaFrota] = useState('');
+  const [filtroDespachadas, setFiltroDespachadas] = useState('');
 
   // Função para alocar frota em uma rampa
   const alocarFrota = (frotaId: string, rampa: number, galpao: number) => {
@@ -61,14 +63,22 @@ const Dashboard = () => {
   const finalizarCarregamento = (frotaId: string) => {
     setFrotas(prev => prev.map(frota => 
       frota.id === frotaId 
-        ? { ...frota, status: 'despachada', rampa: undefined, galpao: undefined, carregada: true }
+        ? { 
+            ...frota, 
+            status: 'despachada', 
+            rampaDespacho: frota.rampa,
+            galpaoDespacho: frota.galpao,
+            rampa: undefined, 
+            galpao: undefined, 
+            carregada: true 
+          }
         : frota
     ));
     
     const frota = frotas.find(f => f.id === frotaId);
     toast({
       title: "Carregamento Finalizado",
-      description: `${frota?.numero} foi despachada e liberou a rampa`,
+      description: `${frota?.numero} foi despachada e liberou a rampa ${frota?.rampa}`,
     });
   };
 
@@ -118,6 +128,11 @@ const Dashboard = () => {
   
   // Frotas despachadas (carregadas e finalizadas)
   const frotasDespachadas = frotas.filter(f => f.status === 'despachada');
+
+  // Filtrar frotas despachadas
+  const frotasDespachadasFiltradas = frotasDespachadas.filter(frota => 
+    frota.numero.toLowerCase().includes(filtroDespachadas.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -387,25 +402,47 @@ const Dashboard = () => {
                   <Car className="h-5 w-5" />
                   Frotas Despachadas
                 </CardTitle>
+                <div className="flex items-center gap-2 mt-2">
+                  <Filter className="h-4 w-4 text-slate-500" />
+                  <Input
+                    placeholder="Filtrar por número da frota..."
+                    value={filtroDespachadas}
+                    onChange={(e) => setFiltroDespachadas(e.target.value)}
+                    className="h-8 text-sm"
+                  />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {frotasDespachadas.map(frota => (
+                  {frotasDespachadasFiltradas.map(frota => (
                     <div
                       key={frota.id}
-                      className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200"
+                      className="p-3 bg-purple-50 rounded-lg border border-purple-200"
                     >
-                      <div className="flex items-center gap-2">
-                        <Car className="h-4 w-4 text-purple-600" />
-                        <span className="font-medium text-purple-800">
-                          {frota.numero}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Car className="h-4 w-4 text-purple-600" />
+                          <span className="font-medium text-purple-800">
+                            {frota.numero}
+                          </span>
+                        </div>
+                        <span className="text-xs text-purple-600 font-medium">
+                          Carregada
                         </span>
                       </div>
-                      <span className="text-xs text-purple-600 font-medium">
-                        Carregada
-                      </span>
+                      {frota.rampaDespacho && (
+                        <div className="text-xs text-slate-600">
+                          Rampa {frota.rampaDespacho} - Vão {frota.galpaoDespacho}
+                        </div>
+                      )}
                     </div>
                   ))}
+                  
+                  {frotasDespachadasFiltradas.length === 0 && frotasDespachadas.length > 0 && (
+                    <p className="text-center text-slate-500 py-8">
+                      Nenhuma frota encontrada com esse filtro
+                    </p>
+                  )}
                   
                   {frotasDespachadas.length === 0 && (
                     <p className="text-center text-slate-500 py-8">
