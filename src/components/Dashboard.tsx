@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Truck, Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
+import { Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -156,7 +157,11 @@ const Dashboard = () => {
                   <p className="text-sm font-medium text-slate-600">Total de Frotas</p>
                   <p className="text-3xl font-bold text-slate-800">{frotas.length}</p>
                 </div>
-                <Truck className="h-8 w-8 text-blue-600" />
+                <img 
+                  src="/lovable-uploads/0ec8f232-4832-4ee7-a549-67f479afca64.png" 
+                  alt="Cegonheira Vazia" 
+                  className="h-8 w-8 object-contain"
+                />
               </div>
             </CardContent>
           </Card>
@@ -200,7 +205,11 @@ const Dashboard = () => {
                     {frotas.filter(f => f.carregada).length}
                   </p>
                 </div>
-                <Car className="h-8 w-8 text-purple-600" />
+                <img 
+                  src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
+                  alt="Cegonheira Carregada" 
+                  className="h-8 w-8 object-contain"
+                />
               </div>
             </CardContent>
           </Card>
