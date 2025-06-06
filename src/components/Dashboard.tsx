@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -362,7 +361,11 @@ const Dashboard = () => {
                       className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200"
                     >
                       <div className="flex items-center gap-2">
-                        <Truck className="h-4 w-4 text-green-600" />
+                        <img 
+                          src="/lovable-uploads/0ec8f232-4832-4ee7-a549-67f479afca64.png" 
+                          alt="Cegonheira Vazia" 
+                          className="h-4 w-4 object-contain"
+                        />
                         <span className="font-medium text-green-800">
                           {frota.numero}
                         </span>
