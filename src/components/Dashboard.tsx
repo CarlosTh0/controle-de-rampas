@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Warehouse, Plus, Minus, Package, CheckCircle, Car, Filter } from 'lucide-react';
+import { Warehouse, Plus, Minus, Package, CheckCircle, Truck, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -157,11 +156,7 @@ const Dashboard = () => {
                   <p className="text-sm font-medium text-slate-600">Total de Frotas</p>
                   <p className="text-3xl font-bold text-slate-800">{frotas.length}</p>
                 </div>
-                <img 
-                  src="/lovable-uploads/0ec8f232-4832-4ee7-a549-67f479afca64.png" 
-                  alt="Cegonheira Vazia" 
-                  className="h-8 w-8 object-contain"
-                />
+                <Truck className="h-8 w-8 text-slate-600" strokeWidth={1.5} />
               </div>
             </CardContent>
           </Card>
@@ -205,11 +200,7 @@ const Dashboard = () => {
                     {frotas.filter(f => f.carregada).length}
                   </p>
                 </div>
-                <img 
-                  src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
-                  alt="Cegonheira Carregada" 
-                  className="h-8 w-8 object-contain"
-                />
+                <Package className="h-8 w-8 text-purple-600" strokeWidth={1.5} />
               </div>
             </CardContent>
           </Card>
@@ -223,7 +214,7 @@ const Dashboard = () => {
                     {16 - frotas.filter(f => f.status === 'rampa').length}
                   </p>
                 </div>
-                <Warehouse className="h-8 w-8 text-blue-600" />
+                <Warehouse className="h-8 w-8 text-blue-600" strokeWidth={1.5} />
               </div>
             </CardContent>
           </Card>
@@ -235,7 +226,7 @@ const Dashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Warehouse className="h-5 w-5" />
+                  <Warehouse className="h-5 w-5" strokeWidth={1.5} />
                   Vãos e Rampas
                 </CardTitle>
               </CardHeader>
@@ -275,11 +266,7 @@ const Dashboard = () => {
                                     </p>
                                     {isCarregada && (
                                       <div className="flex items-center justify-center">
-                                        <img 
-                                          src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
-                                          alt="Cegonheira Carregada" 
-                                          className="h-3 w-3 object-contain"
-                                        />
+                                        <Package className="h-3 w-3 text-purple-600" strokeWidth={1.5} />
                                       </div>
                                     )}
                                     <div className="flex items-center justify-center gap-1">
@@ -366,11 +353,7 @@ const Dashboard = () => {
                       className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200"
                     >
                       <div className="flex items-center gap-2">
-                        <img 
-                          src="/lovable-uploads/0ec8f232-4832-4ee7-a549-67f479afca64.png" 
-                          alt="Cegonheira Vazia" 
-                          className="h-4 w-4 object-contain"
-                        />
+                        <Truck className="h-4 w-4 text-green-600" strokeWidth={1.5} />
                         <span className="font-medium text-green-800">
                           {frota.numero}
                         </span>
@@ -416,11 +399,7 @@ const Dashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <img 
-                    src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
-                    alt="Cegonheira Carregada" 
-                    className="h-5 w-5 object-contain"
-                  />
+                  <Package className="h-5 w-5 text-purple-600" strokeWidth={1.5} />
                   Frotas Despachadas
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
@@ -442,11 +421,7 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <img 
-                            src="/lovable-uploads/1d2bfabb-c2ef-4e69-b9e6-c4bbc385a631.png" 
-                            alt="Cegonheira Carregada" 
-                            className="h-4 w-4 object-contain"
-                          />
+                          <Package className="h-4 w-4 text-purple-600" strokeWidth={1.5} />
                           <span className="font-medium text-purple-800">
                             {frota.numero}
                           </span>
