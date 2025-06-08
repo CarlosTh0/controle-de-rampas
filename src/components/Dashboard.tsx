@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Warehouse, Plus, Minus, Package, CheckCircle, Truck, Filter } from 'lucide-react';
+import { Warehouse, Plus, Minus, Package, CheckCircle, Filter, Lock, Unlock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,12 @@ interface Frota {
   galpaoDespacho?: number; // Galpão onde estava quando foi despachada
 }
 
+interface RampaBloqueada {
+  rampa: number;
+  galpao: number;
+  bloqueada: boolean;
+}
+
 const Dashboard = () => {
   const { toast } = useToast();
   const [frotas, setFrotas] = useState<Frota[]>([
@@ -26,8 +32,44 @@ const Dashboard = () => {
     { id: '4', numero: 'CEG-004', status: 'rampa', rampa: 5, galpao: 2, carregada: true },
   ]);
   
+  const [rampasBloqueadas, setRampasBloqueadas] = useState<RampaBloqueada[]>([]);
   const [novaFrota, setNovaFrota] = useState('');
   const [filtroDespachadas, setFiltroDespachadas] = useState('');
+
+  // Função para bloquear/desbloquear rampa
+  const toggleBloqueioRampa = (rampa: number, galpao: number) => {
+    const rampaExistente = rampasBloqueadas.find(r => r.rampa === rampa && r.galpao === galpao);
+    
+    if (rampaExistente) {
+      // Toggle do bloqueio
+      setRampasBloqueadas(prev => 
+        prev.map(r => 
+          r.rampa === rampa && r.galpao === galpao 
+            ? { ...r, bloqueada: !r.bloqueada }
+            : r
+        )
+      );
+      
+      toast({
+        title: rampaExistente.bloqueada ? "Rampa Desbloqueada" : "Rampa Bloqueada",
+        description: `Rampa ${rampa} foi ${rampaExistente.bloqueada ? 'desbloqueada' : 'bloqueada'}`,
+      });
+    } else {
+      // Criar novo bloqueio
+      setRampasBloqueadas(prev => [...prev, { rampa, galpao, bloqueada: true }]);
+      
+      toast({
+        title: "Rampa Bloqueada",
+        description: `Rampa ${rampa} foi bloqueada`,
+      });
+    }
+  };
+
+  // Verificar se rampa está bloqueada
+  const rampaEstaBloqueada = (rampa: number, galpao: number) => {
+    const rampaBloqueada = rampasBloqueadas.find(r => r.rampa === rampa && r.galpao === galpao);
+    return rampaBloqueada?.bloqueada || false;
+  };
 
   // Função para alocar frota em uma rampa
   const alocarFrota = (frotaId: string, rampa: number, galpao: number) => {
@@ -156,7 +198,11 @@ const Dashboard = () => {
                   <p className="text-sm font-medium text-slate-600">Total de Frotas</p>
                   <p className="text-3xl font-bold text-slate-800">{frotas.length}</p>
                 </div>
-                <Truck className="h-8 w-8 text-slate-600" strokeWidth={1.5} />
+                <img 
+                  src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
+                  alt="Ícone de caminhão" 
+                  className="h-8 w-8" 
+                />
               </div>
             </CardContent>
           </Card>
@@ -200,7 +246,11 @@ const Dashboard = () => {
                     {frotas.filter(f => f.carregada).length}
                   </p>
                 </div>
-                <Package className="h-8 w-8 text-purple-600" strokeWidth={1.5} />
+                <img 
+                  src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
+                  alt="Ícone de cegonheira carregada" 
+                  className="h-8 w-8" 
+                />
               </div>
             </CardContent>
           </Card>
@@ -211,7 +261,7 @@ const Dashboard = () => {
                 <div>
                   <p className="text-sm font-medium text-slate-600">Rampas Livres</p>
                   <p className="text-3xl font-bold text-blue-600">
-                    {16 - frotas.filter(f => f.status === 'rampa').length}
+                    {16 - frotas.filter(f => f.status === 'rampa').length - rampasBloqueadas.filter(r => r.bloqueada).length}
                   </p>
                 </div>
                 <Warehouse className="h-8 w-8 text-blue-600" strokeWidth={1.5} />
@@ -243,23 +293,39 @@ const Dashboard = () => {
                           const frotaOcupando = rampaOcupada(rampa, galpao);
                           const isOcupada = !!frotaOcupando;
                           const isCarregada = frotaOcupando?.carregada;
+                          const isBloqueada = rampaEstaBloqueada(rampa, galpao);
                           
                           return (
                             <div
                               key={rampa}
                               className={`relative p-3 rounded-lg border-2 transition-all duration-200 ${
-                                isOcupada 
-                                  ? isCarregada 
-                                    ? 'bg-purple-50 border-purple-300' 
-                                    : 'bg-orange-50 border-orange-300'
-                                  : 'bg-green-50 border-green-300 hover:bg-green-100'
+                                isBloqueada
+                                  ? 'bg-red-50 border-red-300'
+                                  : isOcupada 
+                                    ? isCarregada 
+                                      ? 'bg-purple-50 border-purple-300' 
+                                      : 'bg-orange-50 border-orange-300'
+                                    : 'bg-green-50 border-green-300 hover:bg-green-100'
                               }`}
                             >
                               <div className="text-center">
                                 <p className="text-xs font-medium text-slate-600">
                                   Rampa {rampa}
                                 </p>
-                                {isOcupada ? (
+                                {isBloqueada ? (
+                                  <div className="mt-1 space-y-2">
+                                    <Lock className="h-4 w-4 text-red-600 mx-auto" strokeWidth={1.5} />
+                                    <p className="text-xs font-bold text-red-700">BLOQUEADA</p>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-6 text-xs border-red-300"
+                                      onClick={() => toggleBloqueioRampa(rampa, galpao)}
+                                    >
+                                      <Unlock className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                ) : isOcupada ? (
                                   <div className="mt-1 space-y-2">
                                     <p className={`text-xs font-bold ${isCarregada ? 'text-purple-700' : 'text-orange-700'}`}>
                                       {frotaOcupando.numero}
@@ -297,13 +363,29 @@ const Dashboard = () => {
                                           <Minus className="h-3 w-3" />
                                         </Button>
                                       )}
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-6 text-xs border-red-300"
+                                        onClick={() => toggleBloqueioRampa(rampa, galpao)}
+                                      >
+                                        <Lock className="h-3 w-3" />
+                                      </Button>
                                     </div>
                                   </div>
                                 ) : (
-                                  <div className="mt-1">
+                                  <div className="mt-1 space-y-2">
                                     <p className="text-xs text-green-600 font-medium">
                                       Livre
                                     </p>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-6 text-xs border-red-300"
+                                      onClick={() => toggleBloqueioRampa(rampa, galpao)}
+                                    >
+                                      <Lock className="h-3 w-3" />
+                                    </Button>
                                   </div>
                                 )}
                               </div>
@@ -353,7 +435,11 @@ const Dashboard = () => {
                       className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200"
                     >
                       <div className="flex items-center gap-2">
-                        <Truck className="h-4 w-4 text-green-600" strokeWidth={1.5} />
+                        <img 
+                          src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
+                          alt="Ícone de caminhão" 
+                          className="h-4 w-4" 
+                        />
                         <span className="font-medium text-green-800">
                           {frota.numero}
                         </span>
@@ -373,8 +459,9 @@ const Dashboard = () => {
                           const rampa = i + 1;
                           const galpao = Math.ceil(rampa / 4);
                           const ocupada = rampaOcupada(rampa, galpao);
+                          const bloqueada = rampaEstaBloqueada(rampa, galpao);
                           
-                          if (ocupada) return null;
+                          if (ocupada || bloqueada) return null;
                           
                           return (
                             <option key={rampa} value={`${rampa}-${galpao}`}>
@@ -399,7 +486,11 @@ const Dashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Package className="h-5 w-5 text-purple-600" strokeWidth={1.5} />
+                  <img 
+                    src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
+                    alt="Ícone de cegonheira carregada" 
+                    className="h-5 w-5" 
+                  />
                   Frotas Despachadas
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
@@ -421,7 +512,11 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Package className="h-4 w-4 text-purple-600" strokeWidth={1.5} />
+                          <img 
+                            src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
+                            alt="Ícone de cegonheira carregada" 
+                            className="h-4 w-4" 
+                          />
                           <span className="font-medium text-purple-800">
                             {frota.numero}
                           </span>
