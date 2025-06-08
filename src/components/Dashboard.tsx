@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import StatsCard from './StatsCard';
 import RampaCard from './RampaCard';
 import FrotasPatio from './FrotasPatio';
+import GestaoVaos from './GestaoVaos';
 
 interface Frota {
   id: string;
@@ -27,6 +28,8 @@ interface RampaBloqueada {
 
 const Dashboard = () => {
   const { toast } = useToast();
+  const [totalVaos, setTotalVaos] = useState(4);
+  const [rampasPorVao, setRampasPorVao] = useState(4);
   const [frotas, setFrotas] = useState<Frota[]>([
     { id: '1', numero: 'CEG-001', status: 'patio' },
     { id: '2', numero: 'CEG-002', status: 'patio' },
@@ -37,6 +40,27 @@ const Dashboard = () => {
   const [rampasBloqueadas, setRampasBloqueadas] = useState<RampaBloqueada[]>([]);
   const [novaFrota, setNovaFrota] = useState('');
   const [filtroDespachadas, setFiltroDespachadas] = useState('');
+
+  const updateConfig = (vaos: number, rampas: number) => {
+    // Remove frotas que estão em rampas que não existem mais
+    setFrotas(prev => prev.map(frota => {
+      if (frota.status === 'rampa' && frota.rampa && frota.galpao) {
+        const novaRampa = (frota.galpao - 1) * rampas + (frota.rampa - 1) % rampas + 1;
+        if (frota.galpao > vaos || novaRampa > rampas * vaos) {
+          return { ...frota, status: 'patio', rampa: undefined, galpao: undefined, carregada: undefined };
+        }
+      }
+      return frota;
+    }));
+
+    // Remove bloqueios de rampas que não existem mais
+    setRampasBloqueadas(prev => 
+      prev.filter(r => r.galpao <= vaos && r.rampa <= rampas * vaos)
+    );
+
+    setTotalVaos(vaos);
+    setRampasPorVao(rampas);
+  };
 
   const toggleBloqueioRampa = (rampa: number, galpao: number) => {
     const rampaExistente = rampasBloqueadas.find(r => r.rampa === rampa && r.galpao === galpao);
@@ -163,6 +187,8 @@ const Dashboard = () => {
     frota.numero.toLowerCase().includes(filtroDespachadas.toLowerCase())
   );
 
+  const totalRampas = totalVaos * rampasPorVao;
+
   return (
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -185,7 +211,7 @@ const Dashboard = () => {
               <img 
                 src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
                 alt="Ícone de caminhão" 
-                className="h-10 w-10" 
+                className="h-12 w-12" 
               />
             }
           />
@@ -220,14 +246,14 @@ const Dashboard = () => {
               <img 
                 src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
                 alt="Ícone de cegonheira carregada" 
-                className="h-10 w-10" 
+                className="h-12 w-12" 
               />
             }
           />
 
           <StatsCard
             title="Rampas Livres"
-            value={16 - frotas.filter(f => f.status === 'rampa').length - rampasBloqueadas.filter(r => r.bloqueada).length}
+            value={totalRampas - frotas.filter(f => f.status === 'rampa').length - rampasBloqueadas.filter(r => r.bloqueada).length}
             textColor="text-blue-600"
             icon={<Warehouse className="h-10 w-10 text-blue-600" strokeWidth={1.5} />}
           />
@@ -245,34 +271,37 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map(galpao => (
-                    <div key={galpao} className="space-y-4">
-                      <h3 className="font-semibold text-slate-700 text-center">
-                        Vão {galpao}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {Array.from({ length: 4 }, (_, i) => {
-                          const rampa = (galpao - 1) * 4 + i + 1;
-                          const frotaOcupando = rampaOcupada(rampa, galpao);
-                          const isBloqueada = rampaEstaBloqueada(rampa, galpao);
-                          
-                          return (
-                            <RampaCard
-                              key={rampa}
-                              rampa={rampa}
-                              galpao={galpao}
-                              frotaOcupando={frotaOcupando}
-                              isBloqueada={isBloqueada}
-                              onToggleBloqueio={toggleBloqueioRampa}
-                              onToggleCarregada={toggleCarregada}
-                              onRemoverFrota={removerFrota}
-                              onFinalizarCarregamento={finalizarCarregamento}
-                            />
-                          );
-                        })}
+                  {Array.from({ length: totalVaos }, (_, galpaoIndex) => {
+                    const galpao = galpaoIndex + 1;
+                    return (
+                      <div key={galpao} className="space-y-4">
+                        <h3 className="font-semibold text-slate-700 text-center">
+                          Vão {galpao}
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {Array.from({ length: rampasPorVao }, (_, rampaIndex) => {
+                            const rampa = (galpao - 1) * rampasPorVao + rampaIndex + 1;
+                            const frotaOcupando = rampaOcupada(rampa, galpao);
+                            const isBloqueada = rampaEstaBloqueada(rampa, galpao);
+                            
+                            return (
+                              <RampaCard
+                                key={rampa}
+                                rampa={rampa}
+                                galpao={galpao}
+                                frotaOcupando={frotaOcupando}
+                                isBloqueada={isBloqueada}
+                                onToggleBloqueio={toggleBloqueioRampa}
+                                onToggleCarregada={toggleCarregada}
+                                onRemoverFrota={removerFrota}
+                                onFinalizarCarregamento={finalizarCarregamento}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -280,6 +309,13 @@ const Dashboard = () => {
 
           {/* Painel de Controle */}
           <div className="space-y-6">
+            {/* Gestão de Vãos */}
+            <GestaoVaos
+              totalVaos={totalVaos}
+              rampasPorVao={rampasPorVao}
+              onUpdateConfig={updateConfig}
+            />
+
             {/* Adicionar Frota */}
             <Card>
               <CardHeader>
@@ -306,6 +342,8 @@ const Dashboard = () => {
               onAlocarFrota={alocarFrota}
               rampaOcupada={rampaOcupada}
               rampaEstaBloqueada={rampaEstaBloqueada}
+              totalRampas={totalRampas}
+              rampasPorVao={rampasPorVao}
             />
 
             {/* Frotas Despachadas */}
@@ -315,7 +353,7 @@ const Dashboard = () => {
                   <img 
                     src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
                     alt="Ícone de cegonheira carregada" 
-                    className="h-6 w-6" 
+                    className="h-8 w-8" 
                   />
                   Frotas Despachadas
                 </CardTitle>
@@ -334,7 +372,7 @@ const Dashboard = () => {
                   {frotasDespachadasFiltradas.map(frota => (
                     <div
                       key={frota.id}
-                      className="p-3 bg-purple-50 rounded-lg border border-purple-200"
+                      className="p-3 bg-purple-50 rounded-lg border border-purple-200 transition-all duration-200 hover:shadow-md"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">

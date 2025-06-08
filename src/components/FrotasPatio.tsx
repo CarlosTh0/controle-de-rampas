@@ -16,9 +16,18 @@ interface FrotasPatioProps {
   onAlocarFrota: (frotaId: string, rampa: number, galpao: number) => void;
   rampaOcupada: (rampa: number, galpao: number) => Frota | undefined;
   rampaEstaBloqueada: (rampa: number, galpao: number) => boolean;
+  totalRampas: number;
+  rampasPorVao: number;
 }
 
-const FrotasPatio = ({ frotas, onAlocarFrota, rampaOcupada, rampaEstaBloqueada }: FrotasPatioProps) => {
+const FrotasPatio = ({ 
+  frotas, 
+  onAlocarFrota, 
+  rampaOcupada, 
+  rampaEstaBloqueada, 
+  totalRampas, 
+  rampasPorVao 
+}: FrotasPatioProps) => {
   return (
     <Card>
       <CardHeader>
@@ -29,7 +38,7 @@ const FrotasPatio = ({ frotas, onAlocarFrota, rampaOcupada, rampaEstaBloqueada }
           {frotas.map(frota => (
             <div
               key={frota.id}
-              className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200"
+              className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200 transition-all duration-200 hover:shadow-md hover:bg-green-100"
             >
               <div className="flex items-center gap-2">
                 <img 
@@ -42,7 +51,7 @@ const FrotasPatio = ({ frotas, onAlocarFrota, rampaOcupada, rampaEstaBloqueada }
                 </span>
               </div>
               <select
-                className="text-sm border rounded px-2 py-1"
+                className="text-sm border rounded px-2 py-1 transition-all duration-200 hover:border-green-400 focus:border-green-500"
                 onChange={(e) => {
                   if (e.target.value) {
                     const [rampa, galpao] = e.target.value.split('-').map(Number);
@@ -52,9 +61,9 @@ const FrotasPatio = ({ frotas, onAlocarFrota, rampaOcupada, rampaEstaBloqueada }
                 defaultValue=""
               >
                 <option value="">Alocar</option>
-                {Array.from({ length: 16 }, (_, i) => {
+                {Array.from({ length: totalRampas }, (_, i) => {
                   const rampa = i + 1;
-                  const galpao = Math.ceil(rampa / 4);
+                  const galpao = Math.ceil(rampa / rampasPorVao);
                   const ocupada = rampaOcupada(rampa, galpao);
                   const bloqueada = rampaEstaBloqueada(rampa, galpao);
                   
