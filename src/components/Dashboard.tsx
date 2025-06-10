@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Warehouse, Plus, Moon, Sun, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -48,6 +49,19 @@ const Dashboard = () => {
   const [filtroPrioridade, setFiltroPrioridade] = useState('todas');
   const [filtroVao, setFiltroVao] = useState('todos');
   const [filtroDespachadas, setFiltroDespachadas] = useState('');
+
+  // Funções que precisam estar declaradas antes dos hooks que as usam
+  const toggleModoEscuro = () => {
+    setConfig(prev => ({ ...prev, modoEscuro: !prev.modoEscuro }));
+  };
+
+  const exportarRelatorio = () => {
+    exportarRelatorioCSV(frotas, movimentacoes);
+    toast({
+      title: "Relatório Exportado",
+      description: "O arquivo CSV foi baixado com sucesso",
+    });
+  };
 
   // Efeitos para persistência
   useEffect(() => {
