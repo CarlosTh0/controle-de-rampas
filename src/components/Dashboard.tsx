@@ -326,18 +326,6 @@ const Dashboard = () => {
     return frotas.find(f => f.rampa === rampa && f.galpao === galpao);
   };
 
-  const toggleModoEscuro = () => {
-    setConfig(prev => ({ ...prev, modoEscuro: !prev.modoEscuro }));
-  };
-
-  const exportarRelatorio = () => {
-    exportarRelatorioCSV(frotas, movimentacoes);
-    toast({
-      title: "Relatório Exportado",
-      description: "O arquivo CSV foi baixado com sucesso",
-    });
-  };
-
   const limparFiltros = () => {
     setBusca('');
     setFiltroStatus('todos');
