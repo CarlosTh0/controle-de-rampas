@@ -507,62 +507,65 @@ const Dashboard = () => {
 
           {/* Painel de Controle */}
           <div className="space-y-6">
-            {/* Filtros Avançados */}
-            <FiltrosAvancados
-              busca={busca}
-              setBusca={setBusca}
-              filtroStatus={filtroStatus}
-              setFiltroStatus={setFiltroStatus}
-              filtroPrioridade={filtroPrioridade}
-              setFiltroPrioridade={setFiltroPrioridade}
-              filtroVao={filtroVao}
-              setFiltroVao={setFiltroVao}
-              onExportar={exportarRelatorio}
-              onLimparFiltros={limparFiltros}
-              totalVaos={config.totalVaos}
-            />
+            {/* Filtros e Adicionar Frota em linha */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              {/* Filtros Avançados */}
+              <FiltrosAvancados
+                busca={busca}
+                setBusca={setBusca}
+                filtroStatus={filtroStatus}
+                setFiltroStatus={setFiltroStatus}
+                filtroPrioridade={filtroPrioridade}
+                setFiltroPrioridade={setFiltroPrioridade}
+                filtroVao={filtroVao}
+                setFiltroVao={setFiltroVao}
+                onExportar={exportarRelatorio}
+                onLimparFiltros={limparFiltros}
+                totalVaos={config.totalVaos}
+              />
 
-            {/* Adicionar Frota com Prioridade */}
-            <Card className="dark:bg-slate-800 dark:border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-lg dark:text-white">Adicionar Frota</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Input
-                    ref={novaFrotaInputRef}
-                    placeholder="Ex: ABC-1234 ou ABC1D23"
-                    value={novaFrota}
-                    onChange={(e) => setNovaFrota(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && adicionarFrota()}
-                    className="dark:bg-slate-700 dark:border-slate-600"
-                  />
-                  
-                  <select
-                    value={novaPrioridade}
-                    onChange={(e) => setNovaPrioridade(e.target.value as 'alta' | 'normal' | 'baixa')}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                  >
-                    <option value="baixa">Prioridade Baixa</option>
-                    <option value="normal">Prioridade Normal</option>
-                    <option value="alta">Prioridade Alta</option>
-                  </select>
-                  
-                  <Button 
-                    onClick={adicionarFrota} 
-                    disabled={isLoading}
-                    className="w-full"
-                  >
-                    {isLoading ? 'Adicionando...' : (
-                      <>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Adicionar Frota
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+              {/* Adicionar Frota com Prioridade */}
+              <Card className="dark:bg-slate-800 dark:border-slate-700">
+                <CardHeader>
+                  <CardTitle className="text-lg dark:text-white">Adicionar Frota</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Input
+                      ref={novaFrotaInputRef}
+                      placeholder="Ex: ABC-1234 ou ABC1D23"
+                      value={novaFrota}
+                      onChange={(e) => setNovaFrota(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && adicionarFrota()}
+                      className="dark:bg-slate-700 dark:border-slate-600"
+                    />
+                    
+                    <select
+                      value={novaPrioridade}
+                      onChange={(e) => setNovaPrioridade(e.target.value as 'alta' | 'normal' | 'baixa')}
+                      className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                    >
+                      <option value="baixa">Prioridade Baixa</option>
+                      <option value="normal">Prioridade Normal</option>
+                      <option value="alta">Prioridade Alta</option>
+                    </select>
+                    
+                    <Button 
+                      onClick={adicionarFrota} 
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      {isLoading ? 'Adicionando...' : (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Adicionar Frota
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Frotas no Pátio */}
             <FrotasPatio
