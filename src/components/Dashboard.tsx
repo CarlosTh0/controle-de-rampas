@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Warehouse, Plus, Moon, Sun, Keyboard } from 'lucide-react';
+import { Warehouse, Plus, Moon, Sun, Keyboard, Truck, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -347,7 +347,7 @@ const Dashboard = () => {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${config.modoEscuro ? 'dark bg-slate-900' : 'bg-slate-50'} p-4 sm:p-6`}>
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
         {/* Header com modo escuro */}
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="flex-1">
@@ -404,13 +404,7 @@ const Dashboard = () => {
           <StatsCard
             title="Total de Frotas"
             value={frotas.length}
-            icon={
-              <img 
-                src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
-                alt="Ícone de caminhão" 
-                className="h-8 w-8 sm:h-12 sm:w-12" 
-              />
-            }
+            icon={<Truck className="h-8 w-8 sm:h-10 sm:w-10" strokeWidth={1.5} />}
           />
 
           <StatsCard
@@ -439,13 +433,7 @@ const Dashboard = () => {
             title="Carregadas"
             value={frotas.filter(f => f.carregada).length}
             textColor="text-purple-600"
-            icon={
-              <img 
-                src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
-                alt="Ícone de cegonheira carregada" 
-                className="h-8 w-8 sm:h-12 sm:w-12" 
-              />
-            }
+            icon={<CheckCircle2 className="h-8 w-8 sm:h-10 sm:w-10 text-purple-600" strokeWidth={1.5} />}
           />
 
           <StatsCard
@@ -582,11 +570,7 @@ const Dashboard = () => {
             <Card className="dark:bg-slate-800 dark:border-slate-700">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2 dark:text-white">
-                  <img 
-                    src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
-                    alt="Ícone de cegonheira carregada" 
-                    className="h-6 w-6 sm:h-8 sm:w-8" 
-                  />
+                  <CheckCircle2 className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" strokeWidth={1.5} />
                   Frotas Despachadas
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
@@ -607,11 +591,7 @@ const Dashboard = () => {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <img 
-                            src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
-                            alt="Ícone de cegonheira carregada" 
-                            className="h-5 w-5" 
-                          />
+                          <CheckCircle2 className="h-5 w-5 text-green-600" strokeWidth={1.5} />
                           <span className="font-medium text-purple-800 dark:text-purple-200">
                             {frota.numero}
                           </span>

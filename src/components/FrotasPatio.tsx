@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Truck } from 'lucide-react';
 import { Frota } from '../types';
 import { calcularTempoDecorrido } from '../utils/timeUtils';
 
@@ -61,11 +62,7 @@ const FrotasPatio = ({
               } ${isAlerta(frota) ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
             >
               <div className="flex items-center gap-2">
-                <img 
-                  src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
-                  alt="Ícone de caminhão" 
-                  className="h-4 w-4" 
-                />
+                <Truck className="h-4 w-4 text-slate-600 dark:text-slate-400" strokeWidth={1.5} />
                 <div>
                   <span className="font-medium text-slate-800 dark:text-slate-200">
                     {frota.numero}
