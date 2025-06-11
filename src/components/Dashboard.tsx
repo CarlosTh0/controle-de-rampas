@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Warehouse, Plus, Moon, Sun, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,6 @@ import {
   salvarConfiguracao,
   carregarConfiguracao
 } from '../utils/localStorage';
-import { validarPlacaBrasileira, formatarPlaca } from '../utils/validation';
 import { calcularTempoDecorrido } from '../utils/timeUtils';
 import { exportarRelatorioCSV } from '../utils/exportUtils';
 import StatsCard from './StatsCard';
@@ -270,25 +268,21 @@ const Dashboard = () => {
   };
 
   const adicionarFrota = async () => {
-    if (!novaFrota.trim()) return;
-    
-    setIsLoading(true);
-    
-    const placaFormatada = formatarPlaca(novaFrota);
-    const validacao = validarPlacaBrasileira(placaFormatada);
-    
-    if (!validacao.valida) {
+    if (!novaFrota.trim()) {
       toast({
-        title: "Placa Inválida",
-        description: validacao.erro,
+        title: "Campo Obrigatório",
+        description: "Por favor, digite um identificador para a frota",
         variant: "destructive"
       });
-      setIsLoading(false);
       return;
     }
     
+    setIsLoading(true);
+    
+    const numeroFrota = novaFrota.trim();
+    
     // Verificar duplicata
-    if (frotas.some(f => f.numero === placaFormatada)) {
+    if (frotas.some(f => f.numero === numeroFrota)) {
       toast({
         title: "Frota Duplicada",
         description: "Esta frota já existe no sistema",
@@ -301,7 +295,7 @@ const Dashboard = () => {
     const agora = new Date();
     const novaFrotaObj: Frota = {
       id: Date.now().toString(),
-      numero: placaFormatada,
+      numero: numeroFrota,
       status: 'patio',
       prioridade: novaPrioridade,
       criadoEm: agora,
