@@ -48,7 +48,6 @@ const Dashboard = () => {
   const [filtroVao, setFiltroVao] = useState('todos');
   const [filtroDespachadas, setFiltroDespachadas] = useState('');
 
-  // Funções que precisam estar declaradas antes dos hooks que as usam
   const toggleModoEscuro = () => {
     setConfig(prev => ({ ...prev, modoEscuro: !prev.modoEscuro }));
   };
@@ -61,7 +60,6 @@ const Dashboard = () => {
     });
   };
 
-  // Efeitos para persistência
   useEffect(() => {
     salvarFrotas(frotas);
   }, [frotas]);
@@ -78,7 +76,6 @@ const Dashboard = () => {
     salvarConfiguracao(config);
   }, [config]);
 
-  // Efeito para modo escuro
   useEffect(() => {
     if (config.modoEscuro) {
       document.documentElement.classList.add('dark');
@@ -95,7 +92,6 @@ const Dashboard = () => {
     onToggleDarkMode: toggleModoEscuro
   });
 
-  // Funções utilitárias
   const adicionarMovimentacao = (frotaId: string, frotaNumero: string, acao: Movimentacao['acao'], detalhes: string, rampa?: number, galpao?: number) => {
     const novaMovimentacao: Movimentacao = {
       id: Date.now().toString(),
