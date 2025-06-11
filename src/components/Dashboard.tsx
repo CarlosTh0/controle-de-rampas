@@ -522,13 +522,6 @@ const Dashboard = () => {
               totalVaos={config.totalVaos}
             />
 
-            {/* Gestão de Vãos */}
-            <GestaoVaos
-              totalVaos={config.totalVaos}
-              rampasPorVao={config.rampasPorVao}
-              onUpdateConfig={updateConfig}
-            />
-
             {/* Adicionar Frota com Prioridade */}
             <Card className="dark:bg-slate-800 dark:border-slate-700">
               <CardHeader>
@@ -661,6 +654,13 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Gestão de Vãos - Movido para o final */}
+            <GestaoVaos
+              totalVaos={config.totalVaos}
+              rampasPorVao={config.rampasPorVao}
+              onUpdateConfig={updateConfig}
+            />
           </div>
         </div>
       </div>
