@@ -346,12 +346,12 @@ const Dashboard = () => {
   });
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${config.modoEscuro ? 'dark bg-slate-900' : 'bg-slate-50'} p-6`}>
-      <div className="max-w-7xl mx-auto">
+    <div className={`min-h-screen transition-colors duration-300 ${config.modoEscuro ? 'dark bg-slate-900' : 'bg-slate-50'} p-4 sm:p-6`}>
+      <div className="max-w-[1600px] mx-auto">
         {/* Header com modo escuro */}
-        <div className="mb-8 flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+        <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white mb-2">
               Sistema de Gestão de Frotas
             </h1>
             <p className="text-slate-600 dark:text-slate-300">
@@ -375,7 +375,7 @@ const Dashboard = () => {
               className="flex items-center gap-2"
             >
               {config.modoEscuro ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              {config.modoEscuro ? 'Modo Claro' : 'Modo Escuro'}
+              <span className="hidden sm:inline">{config.modoEscuro ? 'Modo Claro' : 'Modo Escuro'}</span>
             </Button>
             
             <Button
@@ -385,13 +385,13 @@ const Dashboard = () => {
               title="Atalhos: Ctrl+N (Nova frota), Ctrl+F (Busca), Ctrl+E (Exportar), Ctrl+D (Modo escuro)"
             >
               <Keyboard className="h-4 w-4" />
-              Atalhos
+              <span className="hidden sm:inline">Atalhos</span>
             </Button>
           </div>
         </div>
 
         {/* Estatísticas Avançadas */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <EstatisticasAvancadas 
             frotas={frotas} 
             movimentacoes={movimentacoes} 
@@ -400,7 +400,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Cards Originais */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <StatsCard
             title="Total de Frotas"
             value={frotas.length}
@@ -408,7 +408,7 @@ const Dashboard = () => {
               <img 
                 src="/lovable-uploads/f734fecc-7cb6-4a8b-b2ad-e689122a5756.png" 
                 alt="Ícone de caminhão" 
-                className="h-12 w-12" 
+                className="h-8 w-8 sm:h-12 sm:w-12" 
               />
             }
           />
@@ -418,8 +418,8 @@ const Dashboard = () => {
             value={frotasPatio.length}
             textColor="text-green-600"
             icon={
-              <div className="h-10 w-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                <div className="h-5 w-5 bg-green-600 rounded-full"></div>
+              <div className="h-8 w-8 sm:h-10 sm:w-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                <div className="h-4 w-4 sm:h-5 sm:w-5 bg-green-600 rounded-full"></div>
               </div>
             }
           />
@@ -429,8 +429,8 @@ const Dashboard = () => {
             value={frotas.filter(f => f.status === 'rampa').length}
             textColor="text-orange-600"
             icon={
-              <div className="h-10 w-10 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
-                <div className="h-5 w-5 bg-orange-600 rounded-full"></div>
+              <div className="h-8 w-8 sm:h-10 sm:w-10 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
+                <div className="h-4 w-4 sm:h-5 sm:w-5 bg-orange-600 rounded-full"></div>
               </div>
             }
           />
@@ -443,7 +443,7 @@ const Dashboard = () => {
               <img 
                 src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
                 alt="Ícone de cegonheira carregada" 
-                className="h-12 w-12" 
+                className="h-8 w-8 sm:h-12 sm:w-12" 
               />
             }
           />
@@ -452,22 +452,22 @@ const Dashboard = () => {
             title="Rampas Livres"
             value={totalRampas - frotas.filter(f => f.status === 'rampa').length - rampasBloqueadas.filter(r => r.bloqueada).length}
             textColor="text-blue-600"
-            icon={<Warehouse className="h-10 w-10 text-blue-600" strokeWidth={1.5} />}
+            icon={<Warehouse className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" strokeWidth={1.5} />}
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8">
           {/* Vãos e Rampas */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <Card className="dark:bg-slate-800 dark:border-slate-700">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 dark:text-white">
+                <CardTitle className="flex items-center gap-2 dark:text-white text-lg sm:text-xl">
                   <Warehouse className="h-5 w-5" strokeWidth={1.5} />
                   Vãos e Rampas
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {Array.from({ length: config.totalVaos }, (_, galpaoIndex) => {
                     const galpao = galpaoIndex + 1;
                     return (
@@ -507,65 +507,62 @@ const Dashboard = () => {
 
           {/* Painel de Controle */}
           <div className="space-y-6">
-            {/* Filtros e Adicionar Frota em linha */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {/* Filtros Avançados */}
-              <FiltrosAvancados
-                busca={busca}
-                setBusca={setBusca}
-                filtroStatus={filtroStatus}
-                setFiltroStatus={setFiltroStatus}
-                filtroPrioridade={filtroPrioridade}
-                setFiltroPrioridade={setFiltroPrioridade}
-                filtroVao={filtroVao}
-                setFiltroVao={setFiltroVao}
-                onExportar={exportarRelatorio}
-                onLimparFiltros={limparFiltros}
-                totalVaos={config.totalVaos}
-              />
+            {/* Filtros Avançados */}
+            <FiltrosAvancados
+              busca={busca}
+              setBusca={setBusca}
+              filtroStatus={filtroStatus}
+              setFiltroStatus={setFiltroStatus}
+              filtroPrioridade={filtroPrioridade}
+              setFiltroPrioridade={setFiltroPrioridade}
+              filtroVao={filtroVao}
+              setFiltroVao={setFiltroVao}
+              onExportar={exportarRelatorio}
+              onLimparFiltros={limparFiltros}
+              totalVaos={config.totalVaos}
+            />
 
-              {/* Adicionar Frota com Prioridade */}
-              <Card className="dark:bg-slate-800 dark:border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-lg dark:text-white">Adicionar Frota</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Input
-                      ref={novaFrotaInputRef}
-                      placeholder="Ex: ABC-1234 ou ABC1D23"
-                      value={novaFrota}
-                      onChange={(e) => setNovaFrota(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && adicionarFrota()}
-                      className="dark:bg-slate-700 dark:border-slate-600"
-                    />
-                    
-                    <select
-                      value={novaPrioridade}
-                      onChange={(e) => setNovaPrioridade(e.target.value as 'alta' | 'normal' | 'baixa')}
-                      className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                    >
-                      <option value="baixa">Prioridade Baixa</option>
-                      <option value="normal">Prioridade Normal</option>
-                      <option value="alta">Prioridade Alta</option>
-                    </select>
-                    
-                    <Button 
-                      onClick={adicionarFrota} 
-                      disabled={isLoading}
-                      className="w-full"
-                    >
-                      {isLoading ? 'Adicionando...' : (
-                        <>
-                          <Plus className="h-4 w-4 mr-2" />
-                          Adicionar Frota
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Adicionar Frota com Prioridade */}
+            <Card className="dark:bg-slate-800 dark:border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-lg dark:text-white">Adicionar Frota</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <Input
+                    ref={novaFrotaInputRef}
+                    placeholder="Ex: ABC-1234 ou ABC1D23"
+                    value={novaFrota}
+                    onChange={(e) => setNovaFrota(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && adicionarFrota()}
+                    className="dark:bg-slate-700 dark:border-slate-600"
+                  />
+                  
+                  <select
+                    value={novaPrioridade}
+                    onChange={(e) => setNovaPrioridade(e.target.value as 'alta' | 'normal' | 'baixa')}
+                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                  >
+                    <option value="baixa">Prioridade Baixa</option>
+                    <option value="normal">Prioridade Normal</option>
+                    <option value="alta">Prioridade Alta</option>
+                  </select>
+                  
+                  <Button 
+                    onClick={adicionarFrota} 
+                    disabled={isLoading}
+                    className="w-full"
+                  >
+                    {isLoading ? 'Adicionando...' : (
+                      <>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Adicionar Frota
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Frotas no Pátio */}
             <FrotasPatio
@@ -588,7 +585,7 @@ const Dashboard = () => {
                   <img 
                     src="/lovable-uploads/6607a10f-3288-497b-b69b-f01520b3c275.png" 
                     alt="Ícone de cegonheira carregada" 
-                    className="h-8 w-8" 
+                    className="h-6 w-6 sm:h-8 sm:w-8" 
                   />
                   Frotas Despachadas
                 </CardTitle>
