@@ -108,7 +108,7 @@ const RampaCard = ({
       <div
         className={`relative p-3 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${
           isBloqueada
-            ? 'bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700 animate-pulse'
+            ? 'bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700'
             : isOcupada 
               ? isCarregada 
                 ? `bg-purple-50 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 shadow-purple-200 shadow-lg ${frotaOcupando ? getPrioridadeColor(frotaOcupando.prioridade) : ''}` 
@@ -122,7 +122,7 @@ const RampaCard = ({
           </p>
           {isBloqueada ? (
             <div className="mt-1 space-y-2">
-              <Lock className="h-4 w-4 text-red-600 mx-auto animate-bounce" strokeWidth={1.5} />
+              <Lock className="h-4 w-4 text-red-600 mx-auto" strokeWidth={1.5} />
               <p className="text-xs font-bold text-red-700 dark:text-red-300">BLOQUEADA</p>
               <Button
                 size="sm"
